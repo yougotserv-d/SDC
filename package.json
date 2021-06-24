@@ -1,0 +1,29 @@
+{
+  "name": "sdc",
+  "version": "1.0.0",
+  "description": "systems desgin capstone",
+  "scripts": {
+    "start": "nodemon ./server/index.js"
+  },
+  "dependencies": {
+    "express": "^4.17.1",
+    "morgan": "^1.10.0",
+    "nodemon": "^2.0.7",
+    "pg": "^8.6.0",
+    "postgres": "^1.0.2",
+    "sequelize": "^6.6.2"
+  },
+  "main": "createStarsMetaData.js",
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yougotserv-d/SDC.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/yougotserv-d/SDC/issues"
+  },
+  "homepage": "https://github.com/yougotserv-d/SDC#readme"
+}
