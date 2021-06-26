@@ -1,7 +1,7 @@
 const db = require('../db/queries.js');
 
 
-const getReviews = (req, res) => {
+const getReviews = async (req, res) => {
   // console.log('req.queries logged', req.query)
   let defaultCount = req.query.count || 5;
   let defaultPage = req.query.page || 1;
@@ -21,27 +21,57 @@ const getReviews = (req, res) => {
   if(sort === 'relevant') {
 
   }
-  let query = product
-    ? `SELECT * FROM reviews WHERE product_id = ${product} AND reported = 'false' ${sortQuery} ${startQuery}`
-    : `SELECT * FROM reviews WHERE reported = 'false' ${sortQuery} ${startQuery}`;
+  let query = `SELECT * FROM reviews WHERE product_id = ${product} AND reported = 'false' ${sortQuery} ${startQuery}`
+    // : `SELECT * FROM reviews WHERE reported = 'false' ${sortQuery} ${startQuery}`;
+
 // id < ${reviewSetEnd} AND id > ${reviewSetStart} AND
   // let query = `SELECT * FROM reviews WHERE product_id = ${product}`;
 
-  db.connect()
-    .then(client => {
-      return client
-        .query(query)
-        .then(response => {
-          client.release()
-          console.log(response.rows)
-          res.send(response.rows)
-        })
-        .catch(error => {
-          client.release()
-          console.log(error.stack)
-          res.sendStatus(500)
-        })
-    })
+  if (!product) {
+    // console.error('Error: invalid product_id provided')
+    res.writeHead(404)
+    res.end('Error: invalid product_id provided')
+  } else {
+    const client = await db.connect()
+    try {
+      const response = await client.query(query)
+      console.log(response.rows)
+      res.send(response.rows)
+    } catch (error){
+      console.log(error.stack)
+      res.sendStatus(500)
+    } finally {
+      client.release()
+    }
+
+  }
+
+  // ;(async () => {
+  //   const client = await db.connect()
+  //   try {
+  //     const response = await client.query(query)
+  //     console.log(response.rows)
+  //     res.send(response.rows)
+  //   } finally {
+  //     client.release()
+  //   }
+  // })().catch(error => console.log(error.stack))
+
+  // db.connect()
+  //   .then(client => {
+  //     return client
+  //       .query(query)
+  //       .then(response => {
+  //         client.release()
+  //         console.log(response.rows)
+  //         res.send(response.rows)
+  //       })
+  //       .catch(error => {
+  //         client.release()
+  //         console.log(error.stack)
+  //         res.sendStatus(500)
+  //       })
+  //   })
 }
 
 module.exports =  getReviews;
