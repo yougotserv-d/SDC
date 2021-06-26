@@ -1,4 +1,4 @@
-const db = require('../db/queries.js');
+const db = require('./queries');
 
 const postReview = async (req, res) => {
   const {

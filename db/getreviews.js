@@ -1,4 +1,4 @@
-const db = require('../db/queries.js');
+const db = require('./queries');
 
 
 const getReviews = async (req, res) => {
@@ -9,7 +9,7 @@ const getReviews = async (req, res) => {
   let sort = req.query.sort
   let reviewSetEnd = defaultCount * defaultPage;
   let reviewSetStart = reviewSetEnd - defaultCount;
-  let sortQuery = 'ORDER BY id';
+  let sortQuery = 'ORDER BY date DESC';
   let startQuery = `OFFSET ${reviewSetStart} ROWS FETCH FIRST ${defaultCount} ROW ONLY`;
   // let startQuery = 'ORDER BY id';
   if (sort ===  'newest') {
@@ -21,7 +21,23 @@ const getReviews = async (req, res) => {
   if(sort === 'relevant') {
 
   }
-  let query = `SELECT * FROM reviews WHERE product_id = ${product} AND reported = 'false' ${sortQuery} ${startQuery}`
+  // I NEED TO ADD photos array to each object(row)
+  let query = `SELECT *,
+    coalesce (
+      (
+        SELECT array_to_json(array_agg(row_to_json(x)))
+        FROM (
+          SELECT photo.id, photo.url
+          FROM reviews_photos photo
+          JOIN reviews USING (review_id)
+          WHERE photo.review_id = r.review_id
+        ) x
+      ),
+      '[]'
+    ) AS photos
+    FROM reviews r WHERE product_id = ${product} AND reported = 'false' ${sortQuery} ${startQuery}`;
+
+  // let photoQuery = `SELECT id, url FROM reviews_photos JOIN reviews USING (review_id) WHERE reviews_photo.review_id = reviews.review_id`
     // : `SELECT * FROM reviews WHERE reported = 'false' ${sortQuery} ${startQuery}`;
 
 // id < ${reviewSetEnd} AND id > ${reviewSetStart} AND
@@ -35,8 +51,9 @@ const getReviews = async (req, res) => {
     const client = await db.connect()
     try {
       const response = await client.query(query)
+      // const response2 =  await client.query(photoQuery)
       console.log(response.rows)
-      res.send(response.rows)
+      res.send({product: product, page: defaultPage, count: defaultCount, results: response.rows})
     } catch (error){
       console.log(error.stack)
       res.sendStatus(500)

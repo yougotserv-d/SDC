@@ -1,4 +1,4 @@
-const db = require('../db/queries.js');
+const db = require('./queries');
 
 const putReport = async (req, res) => {
   let query = `EXPLAIN ANALYZE UPDATE reviews SET reported = 'true' WHERE id = ${req.params.review_id}`

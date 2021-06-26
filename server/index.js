@@ -1,7 +1,8 @@
 const express = require('express');
-const getReviews = require('../db/getReviews')
-const putHelpful = require('../db/putHelpful')
-const putReport = require('../db/putReport')
+const getReviews = require('../db/getReviews');
+const putHelpful = require('../db/putHelpful');
+const putReport = require('../db/putReport');
+const getMeta = require('../db/getMeta')
 const db = require('../db/queries.js');
 const morgan = require('morgan')
 const app = express();
@@ -17,6 +18,8 @@ db.on('error', (error, client) => {
 
 
 app.get('/reviews/', getReviews)
+
+app.get('/reviews/meta/', getMeta)
 
 app.put('/reviews/:review_id/helpful', putHelpful)
 

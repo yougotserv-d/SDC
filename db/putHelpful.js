@@ -1,4 +1,4 @@
-const db = require('../db/queries.js');
+const db = require('./queries');
 
 const putHelpful = async (req, res) => {
   let query = `UPDATE reviews SET helpfulness = helpfulness + 1 WHERE id = ${req.params.review_id}`

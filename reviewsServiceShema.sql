@@ -7,6 +7,18 @@ CREATE TABLE products (
   name VARCHAR
 );
 
+DROP TABLE IF EXISTS chars;
+CREATE TABLE chars (
+  id SERIAL PRIMARY KEY,
+  product_id INT NOT NULL,
+  name VARCHAR NOT NULL
+);
+
+COPY chars(id, product_id, name)
+FROM '/Users/spencerasavadejkajorn/SDC/SDC/rawData/characteristics.csv'
+DELIMITER ','
+CSV HEADER;
+
 INSERT INTO products (name)
 SELECT name FROM productcsv;
 
@@ -49,10 +61,52 @@ CREATE TABLE reviews_photos (
 INSERT INTO reviews_photos (review_id, url)
 SELECT review_id, url FROM reviews_photoscsv;
 
+DROP TABLE dummy, reviews_meta, reviews_meta_recommend;
+
+
+SELECT name, characteristic_id, AVG(value) FROM characteristics_reviews WHERE product_id = 5642 GROUP BY characteristic_id;
 
 
 
+ALTER TABLE characteristics_reviews
+ADD COLUMN product_id INT NOT NULL DEFAULT 0;
 
+UPDATE characteristics_reviews
+SET product_id = (SELECT product_id FROM chars WHERE chars.id = characteristics_reviews.characteristic_id);
+
+UPDATE characteristics_reviews
+SET name = (SELECT name FROM chars WHERE chars.id = characteristics_reviews.characteristic_id);
+
+
+
+SELECT json_agg(chars_array)
+AS characteristics
+FROM (
+  SELECT json_build_object(
+    (SELECT name),
+    (SELECT json_build_object)
+  )
+  AS chars_array
+  FROM
+  (
+    SELECT
+    (SELECT name) AS name, json_build_object(
+      'id', (SELECT characteristic_id),
+      'value', (SELECT avg)
+    )
+    FROM
+    (
+    SELECT name, characteristic_id, AVG(value)
+    FROM characteristics_reviews
+    WHERE product_id = 5642
+    GROUP BY characteristic_id, name
+    ) AS a
+  ) AS b
+) AS c;
+
+
+
+/*
 
 DROP TABLE IF EXISTS
 DROP TABLE IF EXISTS reviews_meta;
@@ -123,3 +177,5 @@ SET "true" = (SELECT COUNT(recommend) FROM reviewscsv WHERE recommend = 'true' L
 UPDATE reviews_meta_recommend
 SET "false" = (SELECT COUNT(recommend) FROM reviewscsv WHERE recommend = 'false')
       WHERE product_id = (SELECT product_id FROM reviewscsv);
+
+      */
