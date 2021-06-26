@@ -1,42 +1,57 @@
 const express = require('express');
-let db = require('../db/queries.js');
-let morgan = require('morgan')
-let app = express();const Pool = require('pg').Pool;
-const dbconfig = require('../dbconfig.js')
-const pool = new Pool(dbconfig);
-
+const getReviews = require('../db/getReviews')
+const putHelpful = require('../db/putHelpful')
+const putReport = require('../db/putReport')
+const db = require('../db/queries.js');
+const morgan = require('morgan')
+const app = express();
+const port = 8080;
 
 app.use(express.json());
 app.use(morgan('dev'));
 
-pool.on('error', (error, client) => {
+db.on('error', (error, client) => {
   console.error('Unexpected error on idle client', error);
   process.exit(-1);
 });
 
-app.get('/reviews', (req, res) => {
-  let query = `SELECT * FROM reviews LIMIT 5`
-  let data;
-  pool.connect()
-    .then(client => {
-      return client
-        .query(query)
-        .then(res => {
-          client.release()
-          console.log(res.rows)
-          data = res.rows
-        })
-        .catch(error => {
-          client.release()
-          console.log(error.stack)
-        })
-    })
-    console.log('this is the data after connect', data)
-    res.send(data)
 
-})
+app.get('/reviews/', getReviews)
 
-let port = 3000;
+app.put('/reviews/:review_id/helpful', putHelpful)
+
+app.put('/reviews/:review_id/report', putReport)
+
 app.listen(port, () => {
   console.log(`listening on port ${port}`)
 });
+
+
+
+
+// app.get('/reviews/', (req, res) => {
+//   console.log('req.queries logged', req.query)
+//   let defaultCount = req.query.count || 5;
+//   let defaultPage = req.query.page || 1;
+//   let product = req.query.product_id;
+//   let sort = req.query.sort
+//   let reviewSetEnd = defaultCount * defaultPage;
+//   let reviewSetStart = reviewSetEnd - defaultCount;
+//   let query = product ? `SELECT * FROM reviews WHERE product_id = ${product}`: `SELECT * FROM reviews
+//     WHERE id < ${reviewSetEnd} AND id > ${reviewSetStart} AND reported = 'false'`
+//   db.connect()
+//     .then(client => {
+//       return client
+//         .query(query)
+//         .then(response => {
+//           client.release()
+//           console.log(response.rows)
+//           res.send(response.rows)
+//         })
+//         .catch(error => {
+//           client.release()
+//           console.log(error.stack)
+//           res.sendStatus(500)
+//         })
+//     })
+// })
