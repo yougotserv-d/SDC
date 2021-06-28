@@ -1,8 +1,8 @@
 const db = require('./queries');
 
 const postReview = async (req, res) => {
-  console.log(req.body);
-  const {
+  // console.log(req.body);
+  let {
     product_id,
     rating,
     summary,
@@ -14,7 +14,27 @@ const postReview = async (req, res) => {
     characteristics
   } = req.body
 //  console.log(typeof summary)
-console.log(photos)
+  console.log(summary)
+  for ( let i = 0; i <  summary.length; i++ ) {
+    // console.log(summary)
+    if ( summary[i] === `'`) {
+      summary = summary.slice(0, i).concat("'", summary.slice(i));
+      i++;
+    }
+  }
+  for ( let i = 0; i <  body.length; i++ ) {
+    if ( body[i] === `'`) {
+      body = body.slice(0, i).concat("'", body.slice(i));
+      i++;
+    }
+  }
+  for ( let i = 0; i <  name.length; i++ ) {
+    // console.log(name)
+    if ( name[i] === `'`) {
+      name = name.slice(0, i).concat("'", name.slice(i));
+      i++;
+    }
+  }
 
   let reviewsQuery = `INSERT INTO reviews
   (product_id, rating, date, summary, body, recommend, reviewer_name, reviewer_email)
@@ -42,10 +62,6 @@ console.log(photos)
   // let charsQuery = tempCharsQuery.slice(0, -1);
   let charsReviewsQuery = tempCharsReviewsQuery.slice(0, -1);
 
-  console.log(reviewsQuery);
-  console.log(photosQuery);
-  // console.log(charsQuery);
-  console.log(charsReviewsQuery);
 
   const client = await db.connect()
   try {
@@ -54,10 +70,6 @@ console.log(photos)
     // const insertChars = client.query(charsQuery);
     const insertCharsReviews = client.query(charsReviewsQuery);
     const [insRev, insPho, insCharRev] = await Promise.all([insertReviews, insertPhotos, insertCharsReviews]);
-    console.log(insRev);
-    console.log(insPho);
-    // console.log(insChar);
-    console.log(insCharRev);
     res.sendStatus(204)
   } catch (error){
     console.log(error.stack)
@@ -71,6 +83,14 @@ console.log(photos)
 
 module.exports = postReview;
 
+// console.log(reviewsQuery);
+// console.log(photosQuery);
+// console.log(charsQuery);
+// console.log(charsReviewsQuery);
+// console.log(insRev);
+// console.log(insPho);
+// // console.log(insChar);
+// console.log(insCharRev);
 // db.connect()
 // .then(client => {
 //   return client
