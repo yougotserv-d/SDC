@@ -80,7 +80,7 @@ SET name = (SELECT name FROM chars WHERE chars.id = characteristics_reviews.char
 
 
 
-
+SELECT * FROM reviews ORDER BY id DESC LIMIT 1;
 
 
 

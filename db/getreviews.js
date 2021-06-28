@@ -1,4 +1,4 @@
-const db = require('./queries');
+const db = require('../db/queries.js');
 
 
 const getReviews = async (req, res) => {
@@ -9,7 +9,7 @@ const getReviews = async (req, res) => {
   let sort = req.query.sort
   let reviewSetEnd = defaultCount * defaultPage;
   let reviewSetStart = reviewSetEnd - defaultCount;
-  let sortQuery = 'ORDER BY date DESC';
+  let sortQuery = '';
   let startQuery = `OFFSET ${reviewSetStart} ROWS FETCH FIRST ${defaultCount} ROW ONLY`;
   // let startQuery = 'ORDER BY id';
   if (sort ===  'newest') {
@@ -29,8 +29,8 @@ const getReviews = async (req, res) => {
         FROM (
           SELECT photo.id, photo.url
           FROM reviews_photos photo
-          JOIN reviews USING (review_id)
-          WHERE photo.review_id = r.review_id
+          JOIN reviews USING (id)
+          WHERE photo.review_id = r.id
         ) x
       ),
       '[]'
