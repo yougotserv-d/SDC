@@ -79,14 +79,15 @@ SET name = (SELECT name FROM chars WHERE chars.id = characteristics_reviews.char
 
 
 
-SELECT json_agg(chars_array)
-AS characteristics
-FROM (
-  SELECT json_build_object(
+
+
+
+
+
+EXPLAIN ANALYZE SELECT json_object_agg(
     (SELECT name),
     (SELECT json_build_object)
   )
-  AS chars_array
   FROM
   (
     SELECT
@@ -101,9 +102,18 @@ FROM (
     WHERE product_id = 5642
     GROUP BY characteristic_id, name
     ) AS a
-  ) AS b
-) AS c;
+  ) AS b;
 
+EXPLAIN ANALYZE SELECT json_build_object (
+    '1', (SELECT COUNT(*) FROM reviews WHERE product_id = 56 AND rating = 1),
+    '2', (SELECT COUNT(*) FROM reviews WHERE product_id = 56 AND rating = 2),
+    '3', (SELECT COUNT(*) FROM reviews WHERE product_id = 56 AND rating = 3),
+    '4', (SELECT COUNT(*) FROM reviews WHERE product_id = 56 AND rating = 4));
+
+EXPLAIN ANALYZE SELECT json_build_object (
+    'false', (SELECT COUNT(*) FROM reviews WHERE product_id = 56 AND recommend = 'false'),
+    'true', (SELECT COUNT(*) FROM reviews WHERE product_id = 56 AND recommend = 'true')
+  );
 
 
 /*
