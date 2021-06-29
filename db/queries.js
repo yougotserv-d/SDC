@@ -1,6 +1,9 @@
 const Pool = require('pg').Pool;
 const dbconfig = require('../dbconfig.js')
+const pgp = require('pg-promise')({});
 const pool = new Pool(dbconfig);
+
+const db = pgp(dbconfig)
 
 pool.on('error', (error, client) => {
   console.error('Unexpected error on idle client', error);

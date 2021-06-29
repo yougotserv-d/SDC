@@ -13,10 +13,10 @@ const port = 8080;
 app.use(express.json());
 app.use(morgan('dev'));
 
-db.on('error', (error, client) => {
-  console.error('Unexpected error on idle client', error);
-  process.exit(-1);
-});
+// db.on('error', (error, client) => {
+//   console.error('Unexpected error on idle client', error);
+//   process.exit(-1);
+// });
 
 
 app.get('/reviews/', getReviews);

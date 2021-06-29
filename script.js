@@ -1,16 +1,16 @@
 import http from 'k6/http';
 import { sleep, check } from 'k6';
 export let options = {
-  vus: 200,
-  duration: '10s'
+  vus: 100,
+  duration: '30s'
 }
 
 export default function () {
   // console.time('this')
-  // for (var id = 1; id <= 100; id++) {
+  // for (var id = 1; id <= 10; id++) {
   //   http.get(`http://localhost:8080/reviews/meta/?product_id=${id}`);
   // }
-  let res = http.get('http://localhost:8080/reviews/meta/?product_id=65184');
+  let res = http.get('http://localhost:8080/reviews/?product_id=5614');
   check(res, {
     'is status 200': (r) => r.status === 200,
   })
