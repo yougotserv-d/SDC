@@ -14,7 +14,7 @@ const postReview = async (req, res) => {
     characteristics
   } = req.body
 //  console.log(typeof summary)
-  console.log(summary)
+  // console.log(summary)
   for ( let i = 0; i <  summary.length; i++ ) {
     // console.log(summary)
     if ( summary[i] === `'`) {

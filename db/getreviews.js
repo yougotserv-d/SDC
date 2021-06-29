@@ -52,7 +52,7 @@ const getReviews = async (req, res) => {
     try {
       const response = await client.query(query)
       // const response2 =  await client.query(photoQuery)
-      console.log(response.rows)
+      // console.log(response.rows)
       res.send({product: product, page: defaultPage, count: defaultCount, results: response.rows})
     } catch (error){
       console.log(error.stack)

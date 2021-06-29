@@ -55,7 +55,7 @@ const getMeta = async (req, res) => {
     const client = await db.connect()
     try {
       const response = await client.query(concatQuery2)
-      console.log(response.rows[0])
+      // console.log(response.rows[0])
       res.send(response.rows[0].json_build_object)
     } catch (error) {
       console.log(error.stack)

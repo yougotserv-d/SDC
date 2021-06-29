@@ -2,3 +2,4 @@ dbconfig.js
 node_modules/
 rawData/
 newrelic.js
+newrelic_agent.log
