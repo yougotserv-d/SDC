@@ -1,14 +1,31 @@
-const Pool = require('pg').Pool;
-const dbconfig = require('../dbconfig.js')
+const { password, user } = require('../dbconfig.js')
+const dbconfig = require('../dbconfig');
 const pgp = require('pg-promise')({});
+const QueryResultError = pgp.errors.QueryResultError;
+const qrec = pgp.errors.queryResultErrorCode;
+const Pool = require('pg').Pool;
 const pool = new Pool(dbconfig);
 
-const db = pgp(dbconfig)
+// const db = pgp({
+//   user,
+//   host: 'localhost',
+//   database: 'rawDataSdc',
+//   password,
+//   port: 5432,
+//   error: (err, e) => {
+//     if (err instanceof QueryResultError) {
+//       if(err.code === qrec.noData) {
+//         console.log('Expected data but received none.')
+//       }
+//       console.log(err);
+//     }
+//   }
+// })
 
-pool.on('error', (error, client) => {
-  console.error('Unexpected error on idle client', error);
-  process.exit(-1);
-});
+// pool.on('error', (error, client) => {
+//   console.error('Unexpected error on idle client', error);
+//   process.exit(-1);
+// });
 
 
 
@@ -54,4 +71,4 @@ pool.on('error', (error, client) => {
 //       // .query('SELECT * FROM reviews LIMIT 5')
 //   })
 
-  module.exports = pool;
+module.exports = pool;
