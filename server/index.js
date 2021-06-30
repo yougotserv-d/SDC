@@ -1,6 +1,6 @@
 require('newrelic');
 const express = require('express');
-const getReviews = require('../db/getReviews');
+const getReviews = require('../db/getreviews');
 const putHelpful = require('../db/putHelpful');
 const putReport = require('../db/putReport');
 const getMeta = require('../db/getMeta');
