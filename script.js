@@ -7,10 +7,10 @@ export let options = {
 
 export default function () {
   // console.time('this')
-  for (var id = 1; id <= 10; id++) {
-    http.get(`http://localhost:8080/reviews/meta/?product_id=${id}`);
+  for (var id = 1; id <= 50; id++) {
+    http.get(`http://35.163.10.80:8080/reviews/meta/?product_id=${id}`);
   }
-  // let res = http.get('http://localhost:8080/reviews/?product_id=5614');
+  // let res = http.get('http://35.163.10.80:8080/reviews/?product_id=5614');
   // check(res, {
   //   'is status 200': (r) => r.status === 200,
   // })
