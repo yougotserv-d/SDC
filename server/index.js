@@ -18,10 +18,6 @@ app.use(morgan('dev'));
 //   process.exit(-1);
 // });
 
-app.get('/loaderio-28016b04fdb0ed4ea066ecec5a19c1ad.txt', (req, res) => {
-  res.send('loaderio-28016b04fdb0ed4ea066ecec5a19c1ad')
-})
-
 app.get('/reviews/', getReviews);
 
 app.get('/reviews/meta/', getMeta);
